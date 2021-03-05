@@ -23,6 +23,8 @@ import java.security.Security;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 /**
  * Manages security handlers for the application.
  * It follows the singleton pattern.
@@ -36,6 +38,12 @@ public final class SecurityHandlerFactory
 {
     /** Singleton instance */
     public static final SecurityHandlerFactory INSTANCE = new SecurityHandlerFactory();
+
+    static
+    {
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     private final Map<String, Class<? extends SecurityHandler>> nameToHandler =
             new HashMap<String, Class<? extends SecurityHandler>>();
