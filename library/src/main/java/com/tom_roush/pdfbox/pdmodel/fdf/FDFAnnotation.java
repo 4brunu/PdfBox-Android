@@ -946,7 +946,7 @@ public abstract class FDFAnnotation implements COSObjectable
         }
         else if (base instanceof COSStream)
         {
-            return ((COSStream)base).toTextString();
+            return ((COSStream) base).toTextString();
         }
         else
         {

@@ -141,7 +141,7 @@ public class PDPage implements COSObjectable, PDContentStream
         COSBase base = page.getDictionaryObject(COSName.CONTENTS);
         if (base instanceof COSStream)
         {
-            return ((COSStream)base).createInputStream();
+            return ((COSStream) base).createInputStream();
         }
         else if (base instanceof COSArray && ((COSArray)base).size() > 0)
         {

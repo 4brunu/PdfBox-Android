@@ -325,6 +325,7 @@ public class Overlay implements Closeable
         {
             InputStream in = contentStream.createInputStream();
             IOUtils.copy(in, out);
+
             out.flush();
             in.close();
         }

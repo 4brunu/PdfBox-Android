@@ -54,6 +54,7 @@ public class PDFXrefStreamParser extends BaseParser
             throws IOException
     {
         super(new InputStreamSource(stream.createInputStream()));
+
         this.stream = stream;
         this.document = document;
         this.xrefTrailerResolver = resolver;
