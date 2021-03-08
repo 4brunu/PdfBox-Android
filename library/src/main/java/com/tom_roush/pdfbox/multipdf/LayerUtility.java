@@ -16,7 +16,8 @@
  */
 package com.tom_roush.pdfbox.multipdf;
 
-import com.tom_roush.harmony.awt.geom.AffineTransform;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -24,9 +25,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
-
 import com.tom_roush.fontbox.util.BoundingBox;
+import com.tom_roush.harmony.awt.geom.AffineTransform;
 import com.tom_roush.pdfbox.cos.COSArray;
 import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSDictionary;
@@ -52,7 +52,6 @@ import com.tom_roush.pdfbox.util.Matrix;
  */
 public class LayerUtility
 {
-
     private static final boolean DEBUG = true;
 
     private final PDDocument targetDoc;
@@ -260,6 +259,8 @@ public class LayerUtility
         if ((cropBox.getLowerLeftX() < 0 || cropBox.getLowerLeftY() < 0) && transform.isIdentity())
         {
             // PDFBOX-4044 
+            Log.w("PdfBox-Android", "Negative cropBox " + cropBox +
+                     " and identity transform may make your form invisible");
         }
 
         PDOptionalContentGroup layer = new PDOptionalContentGroup(layerName);
@@ -301,6 +302,7 @@ public class LayerUtility
      * Imports OCProperties from source document to target document so hidden layers can still be
      * hidden after import.
      *
+     * @param srcDoc The source PDF document that contains the /OCProperties to be copied.
      * @throws IOException If an I/O error occurs.
      */
     private void importOcProperties(PDDocument srcDoc) throws IOException
