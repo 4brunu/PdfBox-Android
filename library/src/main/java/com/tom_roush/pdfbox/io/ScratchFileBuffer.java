@@ -16,9 +16,10 @@
  */
 package com.tom_roush.pdfbox.io;
 
+import android.util.Log;
+
 import java.io.EOFException;
 import java.io.IOException;
-
 
 
 import com.tom_roush.pdfbox.cos.COSStream;
@@ -63,7 +64,6 @@ class ScratchFileBuffer implements RandomAccess
     private int[] pageIndexes = new int[16];
     /** number of pages held by this buffer */
     private int pageCount = 0;
-    
 
     /**
      * Creates a new buffer using pages handled by provided {@link ScratchFile}.
@@ -323,6 +323,10 @@ class ScratchFileBuffer implements RandomAccess
             }
             
             int newPagePosition = (int) (seekToPosition / pageSize);
+            if (seekToPosition % pageSize == 0 && seekToPosition == size)
+            {
+                newPagePosition--; // PDFBOX-4756: Prevent seeking a non-yet-existent page...
+            }
             
             currentPage = pageHandler.readPage(pageIndexes[newPagePosition]);
             currentPagePositionInPageIndexes = newPagePosition;
@@ -510,6 +514,10 @@ class ScratchFileBuffer implements RandomAccess
     {
         try
         {
+            if ((pageHandler != null) && Log.isLoggable("PdfBox-Android", Log.DEBUG))
+            {
+                Log.d("PdfBox-Android", "ScratchFileBuffer not closed!");
+            }
             close();
         }
         finally

@@ -19,12 +19,13 @@
 
 package com.tom_roush.pdfbox.io;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 
 /**
  * This class contains various I/O-related methods.
@@ -136,6 +137,7 @@ public final class IOUtils
         }
         catch (IOException ioe)
         {
+            Log.w("PdfBox-Android", "Error closing " + resourceName, ioe);
             if (initialException == null)
             {
                 return ioe;
