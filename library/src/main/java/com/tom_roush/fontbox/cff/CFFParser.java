@@ -35,10 +35,6 @@ import com.tom_roush.fontbox.util.Charsets;
  */
 public class CFFParser
 {
-    /**
-     * Log instance.
-     */
-
     private static final String TAG_OTTO = "OTTO";
     private static final String TAG_TTCF = "ttcf";
     private static final String TAG_TTFONLY = "\u0000\u0001\u0000\u0000";

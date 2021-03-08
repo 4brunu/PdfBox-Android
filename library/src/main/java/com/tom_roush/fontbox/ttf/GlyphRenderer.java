@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class provides a glyph to GeneralPath conversion for true type fonts.
+ * This class provides a glyph to Path conversion for true type fonts.
  * Based on code from Apache Batik, a subproject of Apache XMLGraphics.
  *
  * @see
@@ -73,11 +73,11 @@ class GlyphRenderer
     }
 
     /**
-     * Use the given points to calculate a GeneralPath.
+     * Use the given points to calculate a Path.
      *
-     * @param points the points to be used to generate the GeneralPath
+     * @param points the points to be used to generate the Path
      *
-     * @return the calculated GeneralPath
+     * @return the calculated Path
      */
     private Path calculatePath(Point[] points)
     {

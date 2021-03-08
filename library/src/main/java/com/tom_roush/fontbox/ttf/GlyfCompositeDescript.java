@@ -37,10 +37,6 @@ import java.util.Map;
  */
 public class GlyfCompositeDescript extends GlyfDescript
 {
-    /**
-     * Log instance.
-     */
-
     private final List<GlyfCompositeComp> components = new ArrayList<GlyfCompositeComp>();
     private final Map<Integer,GlyphDescription> descriptions = new HashMap<Integer,GlyphDescription>();
     private GlyphTable glyphTable = null;

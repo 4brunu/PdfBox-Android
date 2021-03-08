@@ -130,7 +130,7 @@ public class Type1CharString
     }
 
     /**
-     * Renders the Type 1 char string sequence to a GeneralPath.
+     * Renders the Type 1 char string sequence to a Path.
      */
     private void render()
     {

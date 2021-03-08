@@ -44,10 +44,6 @@ import java.nio.ByteBuffer;
  */
 class Type1Lexer
 {
-    /**
-     * Log instance.
-     */
-
     private final ByteBuffer buffer;
     private Token aheadToken;
     private int openParens = 0;

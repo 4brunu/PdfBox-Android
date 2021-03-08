@@ -632,12 +632,12 @@ public class AffineTransform implements Cloneable, Serializable
 //        {
 //            return null;
 //        }
-//        if (src instanceof GeneralPath)
+//        if (src instanceof Path)
 //        {
-//            return ((GeneralPath) src).createTransformedShape(this);
+//            return ((Path) src).createTransformedShape(this);
 //        }
 //        PathIterator path = src.getPathIterator(this);
-//        GeneralPath dst = new GeneralPath(path.getWindingRule());
+//        Path dst = new Path(path.getWindingRule());
 //        dst.append(path, false);
 //        return dst;
 //    } TODO: PdfBox-Android

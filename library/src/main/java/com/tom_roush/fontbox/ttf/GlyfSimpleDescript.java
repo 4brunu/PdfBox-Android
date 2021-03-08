@@ -28,11 +28,6 @@ import java.io.IOException;
  */
 public class GlyfSimpleDescript extends GlyfDescript
 {
-
-    /**
-     * Log instance.
-     */
-
     private int[] endPtsOfContours;
     private byte[] flags;
     private short[] xCoordinates;
