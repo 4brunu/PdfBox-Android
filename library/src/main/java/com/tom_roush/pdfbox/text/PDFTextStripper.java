@@ -16,6 +16,9 @@
  */
 package com.tom_roush.pdfbox.text;
 
+import android.util.Log;
+
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,7 +40,6 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
-
 
 
 import com.tom_roush.pdfbox.pdmodel.PDDocument;
@@ -63,7 +65,6 @@ public class PDFTextStripper extends LegacyPDFStreamEngine
     private static float defaultIndentThreshold = 2.0f;
     private static float defaultDropThreshold = 2.5f;
     private static final boolean useCustomQuickSort;
-
 
     // enable the ability to set the default indent/drop thresholds
     // with -D system properties:
@@ -215,6 +216,11 @@ public class PDFTextStripper extends LegacyPDFStreamEngine
     /**
      * This will return the text of a document. See writeText. <br>
      * NOTE: The document must not be encrypted when coming into this method.
+     * 
+     * <p>IMPORTANT: By default, text extraction is done in the same sequence as the text in the PDF page content stream.
+     * PDF is a graphic format, not a text format, and unlike HTML, it has no requirements that text one on page
+     * be rendered in a certain order. The order is the one that was determined by the software that created the
+     * PDF. To get text sorted from left to right and top to botton, use {@link #setSortByPosition(boolean)}.
      *
      * @param doc The document to get the text from.
      * @return The text of the PDF document.
@@ -398,7 +404,7 @@ public class PDFTextStripper extends LegacyPDFStreamEngine
         beadRectangles = new ArrayList<PDRectangle>();
         for (PDThreadBead bead : page.getThreadBeads())
         {
-            if (bead == null)
+            if (bead == null || bead.getRectangle() == null)
             {
                 // can't skip, because of null entry handling in processTextPosition()
                 beadRectangles.add(null);
@@ -670,12 +676,24 @@ public class PDFTextStripper extends LegacyPDFStreamEngine
                     }
                     // test if our TextPosition starts after a new word would be expected to start
                     if (expectedStartOfNextWordX != EXPECTED_START_OF_NEXT_WORD_X_RESET_VALUE
-                            && expectedStartOfNextWordX < positionX &&
-                            // only bother adding a space if the last character was not a space
-                            lastPosition.getTextPosition().getUnicode() != null
-                            && !lastPosition.getTextPosition().getUnicode().endsWith(" "))
+                            && expectedStartOfNextWordX < positionX
+                            // only bother adding a word separator if the last character was not a word separator
+                            && (wordSeparator.isEmpty() || //
+                                    (lastPosition.getTextPosition().getUnicode() != null
+                                            && !lastPosition.getTextPosition().getUnicode()
+                                                    .endsWith(wordSeparator))))
                     {
                         line.add(LineItem.getWordSeparator());
+                    }
+                    // if there is at least the equivalent of one space
+                    // between the last character and the current one,
+                    // reset the max line height as the font size may have completely changed
+                    if (Math.abs(position.getX()
+                            - lastPosition.getTextPosition().getX()) > (wordSpacing + deltaSpace))
+                    {
+                        maxYForLine = MAX_Y_FOR_LINE_RESET_VALUE;
+                        maxHeightForLine = MAX_HEIGHT_FOR_LINE_RESET_VALUE;
+                        minYTopForLine = MIN_Y_TOP_FOR_LINE_RESET_VALUE;
                     }
                 }
                 if (positionY >= maxYForLine)
@@ -1839,19 +1857,15 @@ public class PDFTextStripper extends LegacyPDFStreamEngine
     static
     {
         String path = "/org/apache/pdfbox/resources/text/BidiMirroring.txt";
-        InputStream input = PDFTextStripper.class.getResourceAsStream(path);
+        InputStream input = new BufferedInputStream(PDFTextStripper.class.getResourceAsStream(path));
         try
         {
-            if (input != null)
-            {
-                parseBidiFile(input);
-            }
-            else
-            {
-            }
+            parseBidiFile(input);
         }
         catch (IOException e)
         {
+            Log.w("PdfBox-Android", "Could not parse BidiMirroring.txt, mirroring char map will be empty: "
+                    + e.getMessage());
         }
         finally
         {
@@ -1861,6 +1875,7 @@ public class PDFTextStripper extends LegacyPDFStreamEngine
             }
             catch (IOException e)
             {
+                Log.e("PdfBox-Android", "Could not close BidiMirroring.txt ", e);
             }
         }
     }

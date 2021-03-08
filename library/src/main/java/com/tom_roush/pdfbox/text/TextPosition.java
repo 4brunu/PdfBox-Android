@@ -16,11 +16,12 @@
  */
 package com.tom_roush.pdfbox.text;
 
+import android.util.Log;
+
 import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 
 import com.tom_roush.pdfbox.pdmodel.font.PDFont;
 import com.tom_roush.pdfbox.util.Matrix;
@@ -32,7 +33,6 @@ import com.tom_roush.pdfbox.util.Matrix;
  */
 public final class TextPosition
 {
-
     private static final Map<Integer, String> DIACRITICS = createDiacritics();
 
     // text matrix for the start of the text object, coordinates are in display units
@@ -597,6 +597,8 @@ public final class TextPosition
         {
             if (i >= widths.length)
             {
+                Log.i("PdfBox-Android", "diacritic " + diacritic.getUnicode() + " on ligature " + unicode +
+                        " is not supported yet and is ignored (PDFBOX-2831)");
                 break;
             }
             float currCharXEnd = currCharXStart + widths[i];

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import com.tom_roush.pdfbox.pdmodel.PDPage;
@@ -67,11 +66,11 @@ public class PDFTextStripperByArea extends PDFTextStripper
      * @param rect The rectangle area to retrieve the text from. The y-coordinates are java
      * coordinates (y == 0 is top), not PDF coordinates (y == 0 is bottom).
      */
-   public void addRegion( String regionName, RectF rect )
-   {
-       regions.add( regionName );
-       regionArea.put( regionName, rect );
-   }
+    public void addRegion( String regionName, RectF rect )
+    {
+        regions.add( regionName );
+        regionArea.put( regionName, rect );
+    }
 
     /**
      * Delete a region to group text by. If the region does not exist, this method does nothing.
@@ -138,17 +137,15 @@ public class PDFTextStripperByArea extends PDFTextStripper
      * {@inheritDoc}
      */
     @Override
-    protected void processTextPosition( TextPosition text )
+    protected void processTextPosition(TextPosition text)
     {
-        Iterator<String> regionIter = regionArea.keySet().iterator();
-        while( regionIter.hasNext() )
+        for (Map.Entry<String, RectF> regionAreaEntry : regionArea.entrySet())
         {
-            String region = regionIter.next();
-            RectF rect = regionArea.get( region );
-            if( rect.contains( text.getX(), text.getY() ) )
+            RectF rect = regionAreaEntry.getValue();
+            if (rect.contains(text.getX(), text.getY()))
             {
-                charactersByArticle = regionCharacterList.get( region );
-                super.processTextPosition( text );
+                charactersByArticle = regionCharacterList.get(regionAreaEntry.getKey());
+                super.processTextPosition(text);
             }
         }
     }

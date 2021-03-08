@@ -17,11 +17,12 @@
 package com.tom_roush.pdfbox.text;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
+import java.util.Deque;
 
 import com.tom_roush.pdfbox.cos.COSDictionary;
 import com.tom_roush.pdfbox.cos.COSName;
@@ -41,7 +42,7 @@ public class PDFMarkedContentExtractor extends LegacyPDFStreamEngine
 {
     private final boolean suppressDuplicateOverlappingText = true;
     private final List<PDMarkedContent> markedContents = new ArrayList<PDMarkedContent>();
-    private final Stack<PDMarkedContent> currentMarkedContents = new Stack<PDMarkedContent>();
+    private final Deque<PDMarkedContent> currentMarkedContents = new ArrayDeque<PDMarkedContent>();
     private final Map<String, List<TextPosition>> characterListMapping = new HashMap<String, List<TextPosition>>();
 
     /**
@@ -79,6 +80,7 @@ public class PDFMarkedContentExtractor extends LegacyPDFStreamEngine
         return second > first - variance && second < first + variance;
     }
 
+    @Override
     public void beginMarkedContentSequence(COSName tag, COSDictionary properties)
     {
         PDMarkedContent markedContent = PDMarkedContent.create(tag, properties);
@@ -98,6 +100,7 @@ public class PDFMarkedContentExtractor extends LegacyPDFStreamEngine
         this.currentMarkedContents.push(markedContent);
     }
 
+    @Override
     public void endMarkedContentSequence()
     {
         if (!this.currentMarkedContents.isEmpty())
