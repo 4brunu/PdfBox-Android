@@ -16,15 +16,18 @@
  */
 package com.tom_roush.pdfbox.pdfparser;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
-
 
 
 import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSDictionary;
 import com.tom_roush.pdfbox.cos.COSDocument;
 import com.tom_roush.pdfbox.cos.COSName;
+import com.tom_roush.pdfbox.cos.COSNull;
+import com.tom_roush.pdfbox.cos.COSObject;
 import com.tom_roush.pdfbox.io.IOUtils;
 import com.tom_roush.pdfbox.io.RandomAccessRead;
 import com.tom_roush.pdfbox.io.ScratchFile;
@@ -33,7 +36,6 @@ import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException;
 
 public class PDFParser extends COSParser
 {
-
     /**
      * Constructor.
      * Unrestricted main memory will be used for buffering PDF streams.
@@ -135,6 +137,8 @@ public class PDFParser extends COSParser
             }
             catch (NumberFormatException nfe)
             {
+                Log.w("PdfBox-Android", "System property " + SYSPROP_EOFLOOKUPRANGE
+                        + " does not contain an integer value, but: '" + eofLookupRangeStr + "'");
             }
         }
         document = new COSDocument(scratchFile);

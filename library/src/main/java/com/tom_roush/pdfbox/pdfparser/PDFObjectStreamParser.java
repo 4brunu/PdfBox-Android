@@ -16,14 +16,19 @@
  */
 package com.tom_roush.pdfbox.pdfparser;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 
 import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSDocument;
+import com.tom_roush.pdfbox.cos.COSName;
 import com.tom_roush.pdfbox.cos.COSObject;
 import com.tom_roush.pdfbox.cos.COSStream;
 
@@ -35,12 +40,9 @@ import com.tom_roush.pdfbox.cos.COSStream;
  */
 public class PDFObjectStreamParser extends BaseParser
 {
-    /**
-     * Log instance.
-     */
-
     private List<COSObject> streamObjects = null;
-    private final COSStream stream;
+    private final int numberOfObjects;
+    private final int firstObject;
 
     /**
      * Constructor.
@@ -52,9 +54,19 @@ public class PDFObjectStreamParser extends BaseParser
     public PDFObjectStreamParser(COSStream stream, COSDocument document) throws IOException
     {
         super(new InputStreamSource(stream.createInputStream()));
-
-        this.stream = stream;
         this.document = document;
+        // get mandatory number of objects
+        numberOfObjects = stream.getInt(COSName.N);
+        if (numberOfObjects == -1)
+        {
+            throw new IOException("/N entry missing in object stream");
+        }
+        // get mandatory stream offset of the first object
+        firstObject = stream.getInt(COSName.FIRST);
+        if (firstObject == -1)
+        {
+            throw new IOException("/First entry missing in object stream");
+        }
     }
 
     /**
@@ -67,42 +79,19 @@ public class PDFObjectStreamParser extends BaseParser
     {
         try
         {
-            //need to first parse the header.
-            int numberOfObjects = stream.getInt( "N" );
-            if (numberOfObjects == -1)
-            {
-                throw new IOException("/N entry missing in object stream");
-            }
-            List<Long> objectNumbers = new ArrayList<Long>( numberOfObjects );
+            Map<Integer, Long> offsets = readOffsets();
             streamObjects = new ArrayList<COSObject>( numberOfObjects );
-            for( int i=0; i<numberOfObjects; i++ )
+            for (Entry<Integer, Long> offset : offsets.entrySet())
             {
-                long objectNumber = readObjectNumber();
-                // skip offset
-                readLong();
-                objectNumbers.add( objectNumber);
-            }
-            COSObject object;
-            COSBase cosObject;
-            int objectCounter = 0;
-            while( (cosObject = parseDirObject()) != null )
-            {
-                object = new COSObject(cosObject);
+                COSBase cosObject = parseObject(offset.getKey());
+                COSObject object = new COSObject(cosObject);
                 object.setGenerationNumber(0);
-                if (objectCounter >= objectNumbers.size())
+                object.setObjectNumber(offset.getValue());
+                streamObjects.add(object);
+                if (Log.isLoggable("PdfBox-Android", Log.DEBUG))
                 {
-                    break;
+                    Log.d("PdfBox-Android", "parsed=" + object);
                 }
-                object.setObjectNumber( objectNumbers.get( objectCounter) );
-                streamObjects.add( object );
-                // According to the spec objects within an object stream shall not be enclosed
-                // by obj/endobj tags, but there are some pdfs in the wild using those tags 
-                // skip endobject marker if present
-                if (!seqSource.isEOF() && seqSource.peek() == 'e')
-                {
-                    readLine();
-                }
-                objectCounter++;
             }
         }
         finally
@@ -120,4 +109,32 @@ public class PDFObjectStreamParser extends BaseParser
     {
         return streamObjects;
     }
+
+    private Map<Integer, Long> readOffsets() throws IOException
+    {
+        // according to the pdf spec the offsets shall be sorted ascending
+        // but we can't rely on that, so that we have to sort the offsets
+        // as the sequential parsers relies on it, see PDFBOX-4927
+        Map<Integer, Long> objectNumbers = new TreeMap<Integer, Long>();
+        for (int i = 0; i < numberOfObjects; i++)
+        {
+            long objectNumber = readObjectNumber();
+            int offset = (int) readLong();
+            objectNumbers.put(offset, objectNumber);
+        }
+        return objectNumbers;
+    }
+
+    private COSBase parseObject(int offset) throws IOException
+    {
+        long currentPosition = seqSource.getPosition();
+        int finalPosition = firstObject + offset;
+        if (finalPosition > 0 && currentPosition < finalPosition)
+        {
+            // jump to the offset of the object to be parsed
+            seqSource.readFully(finalPosition - (int) currentPosition);
+        }
+        return parseDirObject();
+    }
+
 }
