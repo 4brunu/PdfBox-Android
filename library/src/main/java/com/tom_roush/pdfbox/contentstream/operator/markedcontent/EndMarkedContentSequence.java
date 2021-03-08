@@ -23,7 +23,6 @@ import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.contentstream.operator.Operator;
 import com.tom_roush.pdfbox.contentstream.operator.OperatorName;
 import com.tom_roush.pdfbox.contentstream.operator.OperatorProcessor;
-import com.tom_roush.pdfbox.text.PDFMarkedContentExtractor;
 
 /**
  * EMC : Ends a marked-content sequence begun by BMC or BDC.
@@ -35,10 +34,7 @@ public class EndMarkedContentSequence extends OperatorProcessor
     @Override
     public void process(Operator operator, List<COSBase> arguments) throws IOException
     {
-        if (this.context instanceof PDFMarkedContentExtractor)
-        {
-            ((PDFMarkedContentExtractor) this.context).endMarkedContentSequence();
-        }
+        context.endMarkedContentSequence();
     }
 
     @Override

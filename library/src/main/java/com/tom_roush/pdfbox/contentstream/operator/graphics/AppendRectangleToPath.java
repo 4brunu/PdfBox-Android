@@ -20,11 +20,12 @@ import android.graphics.PointF;
 
 import java.io.IOException;
 import java.util.List;
-
 import com.tom_roush.pdfbox.contentstream.operator.MissingOperandException;
-import com.tom_roush.pdfbox.contentstream.operator.Operator;
+
 import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSNumber;
+import com.tom_roush.pdfbox.contentstream.operator.Operator;
+import com.tom_roush.pdfbox.contentstream.operator.OperatorName;
 
 /**
  * re Appends a rectangle to the path.
@@ -44,7 +45,6 @@ public final class AppendRectangleToPath extends GraphicsOperatorProcessor
         {
             return;
         }
-
         COSNumber x = (COSNumber) operands.get(0);
         COSNumber y = (COSNumber) operands.get(1);
         COSNumber w = (COSNumber) operands.get(2);
@@ -68,6 +68,6 @@ public final class AppendRectangleToPath extends GraphicsOperatorProcessor
     @Override
     public String getName()
     {
-        return "re";
+        return OperatorName.APPEND_RECT;
     }
 }

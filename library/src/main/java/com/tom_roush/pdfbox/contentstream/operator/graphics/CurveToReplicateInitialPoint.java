@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.tom_roush.pdfbox.contentstream.operator.MissingOperandException;
 import com.tom_roush.pdfbox.cos.COSBase;
@@ -58,6 +59,7 @@ public class CurveToReplicateInitialPoint extends GraphicsOperatorProcessor
 
         if (currentPoint == null)
         {
+            Log.w("PdfBox-Android", "curveTo (" + point3.x + "," + point3.y + ") without initial MoveTo");
             context.moveTo(point3.x, point3.y);
         }
         else

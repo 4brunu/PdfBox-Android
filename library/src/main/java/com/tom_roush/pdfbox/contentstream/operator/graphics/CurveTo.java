@@ -23,9 +23,11 @@ import java.io.IOException;
 import java.util.List;
 
 import com.tom_roush.pdfbox.contentstream.operator.MissingOperandException;
-import com.tom_roush.pdfbox.contentstream.operator.Operator;
+
 import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSNumber;
+import com.tom_roush.pdfbox.contentstream.operator.Operator;
+import com.tom_roush.pdfbox.contentstream.operator.OperatorName;
 
 /**
  * c Append curved segment to path.
@@ -65,14 +67,14 @@ public class CurveTo extends GraphicsOperatorProcessor
         else
         {
             context.curveTo(point1.x, point1.y,
-                point2.x, point2.y,
-                point3.x, point3.y);
+                    point2.x, point2.y,
+                    point3.x, point3.y);
         }
     }
 
     @Override
     public String getName()
     {
-        return "c";
+        return OperatorName.CURVE_TO;
     }
 }

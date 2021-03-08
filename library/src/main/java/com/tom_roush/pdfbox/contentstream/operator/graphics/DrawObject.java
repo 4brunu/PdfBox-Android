@@ -16,18 +16,21 @@
  */
 package com.tom_roush.pdfbox.contentstream.operator.graphics;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.List;
 
 import com.tom_roush.pdfbox.contentstream.operator.MissingOperandException;
-import com.tom_roush.pdfbox.contentstream.operator.Operator;
 import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSName;
 import com.tom_roush.pdfbox.pdmodel.MissingResourceException;
-import com.tom_roush.pdfbox.pdmodel.graphics.PDXObject;
 import com.tom_roush.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import com.tom_roush.pdfbox.pdmodel.graphics.form.PDTransparencyGroup;
 import com.tom_roush.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import com.tom_roush.pdfbox.pdmodel.graphics.PDXObject;
+import com.tom_roush.pdfbox.contentstream.operator.Operator;
+import com.tom_roush.pdfbox.contentstream.operator.OperatorName;
 
 /**
  * Do: Draws an XObject.
@@ -40,7 +43,7 @@ public final class DrawObject extends GraphicsOperatorProcessor
     @Override
     public void process(Operator operator, List<COSBase> operands) throws IOException
     {
-        if (operands.size() < 1)
+        if (operands.isEmpty())
         {
             throw new MissingOperandException(operator, operands);
         }
@@ -49,7 +52,7 @@ public final class DrawObject extends GraphicsOperatorProcessor
         {
             return;
         }
-        COSName objectName = (COSName)base0;
+        COSName objectName = (COSName) base0;
         PDXObject xobject = context.getResources().getXObject(objectName);
 
         if (xobject == null)
@@ -61,19 +64,36 @@ public final class DrawObject extends GraphicsOperatorProcessor
             PDImageXObject image = (PDImageXObject)xobject;
             context.drawImage(image);
         }
-        else if (xobject instanceof PDTransparencyGroup)
-        {
-            getContext().showTransparencyGroup((PDTransparencyGroup)xobject);
-        }
         else if (xobject instanceof PDFormXObject)
         {
-            getContext().showForm((PDFormXObject)xobject);
+            try
+            {
+                context.increaseLevel();
+                if (context.getLevel() > 25)
+                {
+                    Log.e("PdfBox-Android", "recursion is too deep, skipping form XObject");
+                    return;
+                }
+                PDFormXObject form = (PDFormXObject) xobject;
+                if (form instanceof PDTransparencyGroup)
+                {
+                    context.showTransparencyGroup((PDTransparencyGroup) form);
+                }
+                else
+                {
+                    context.showForm(form);
+                }
+            }
+            finally
+            {
+                context.decreaseLevel();
+            }
         }
     }
 
     @Override
     public String getName()
     {
-        return "Do";
+        return OperatorName.DRAW_OBJECT;
     }
 }

@@ -16,6 +16,8 @@
  */
 package com.tom_roush.pdfbox.contentstream.operator;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class DrawObject extends OperatorProcessor
     @Override
     public void process(Operator operator, List<COSBase> arguments) throws IOException
     {
-        if (arguments.size() < 1)
+        if (arguments.isEmpty())
         {
             throw new MissingOperandException(operator, arguments);
         }
@@ -45,30 +47,46 @@ public class DrawObject extends OperatorProcessor
         {
             return;
         }
-        COSName name = (COSName)base0;
+        COSName name = (COSName) base0;
 
         if (context.getResources().isImageXObject(name))
         {
             // we're done here, don't decode images when doing text extraction
             return;
         }
-
+        
         PDXObject xobject = context.getResources().getXObject(name);
 
-        if (xobject instanceof PDTransparencyGroup)
+        if (xobject instanceof PDFormXObject)
         {
-            context.showTransparencyGroup((PDTransparencyGroup)xobject);
-        }
-        else if (xobject instanceof PDFormXObject)
-        {
-            PDFormXObject form = (PDFormXObject)xobject;
-            context.showForm(form);
+            try
+            {
+                context.increaseLevel();
+                if (context.getLevel() > 25)
+                {
+                    Log.e("PdfBox-Android", "recursion is too deep, skipping form XObject");
+                    return;
+                }
+                PDFormXObject form = (PDFormXObject) xobject;
+                if (form instanceof PDTransparencyGroup)
+                {
+                    context.showTransparencyGroup((PDTransparencyGroup) form);
+                }
+                else
+                {
+                    context.showForm(form);
+                }
+            }
+            finally
+            {
+                context.decreaseLevel();
+            }
         }
     }
 
     @Override
     public String getName()
     {
-        return "Do";
+        return OperatorName.DRAW_OBJECT;
     }
 }

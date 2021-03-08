@@ -16,6 +16,8 @@
  */
 package com.tom_roush.pdfbox.contentstream.operator.state;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -55,6 +57,7 @@ public class SetGraphicsStateParameters extends OperatorProcessor
         PDExtendedGraphicsState gs = context.getResources().getExtGState(graphicsName);
         if (gs == null)
         {
+            Log.e("PdfBox-Android", "name for 'gs' operator not found in resources: /" + graphicsName.getName());
             return;
         }
         gs.copyIntoGraphicsState( context.getGraphicsState() );

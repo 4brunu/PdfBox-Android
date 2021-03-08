@@ -16,6 +16,8 @@
  */
 package com.tom_roush.pdfbox.contentstream.operator.text;
 
+import android.util.Log;
+
 import java.util.List;
 
 
@@ -46,6 +48,7 @@ public class MoveText extends OperatorProcessor
         Matrix textLineMatrix = context.getTextLineMatrix();
         if (textLineMatrix == null)
         {
+            Log.w("PdfBox-Android", "TextLineMatrix is null, " + getName() + " operator will be ignored");
             return;
         }        
         

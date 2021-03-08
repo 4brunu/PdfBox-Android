@@ -16,6 +16,8 @@
  */
 package com.tom_roush.pdfbox.contentstream.operator.markedcontent;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.List;
 import com.tom_roush.pdfbox.contentstream.operator.MissingOperandException;
@@ -26,6 +28,7 @@ import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSName;
 import com.tom_roush.pdfbox.pdmodel.graphics.PDXObject;
 import com.tom_roush.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import com.tom_roush.pdfbox.pdmodel.graphics.form.PDTransparencyGroup;
 import com.tom_roush.pdfbox.text.PDFMarkedContentExtractor;
 
 /**
@@ -55,8 +58,28 @@ public class DrawObject extends OperatorProcessor
 
         if (xobject instanceof PDFormXObject)
         {
-            PDFormXObject form = (PDFormXObject)xobject;
-            context.showForm(form);
+            try
+            {
+                context.increaseLevel();
+                if (context.getLevel() > 25)
+                {
+                    Log.e("PdfBox-Android", "recursion is too deep, skipping form XObject");
+                    return;
+                }
+                PDFormXObject form = (PDFormXObject) xobject;
+                if (form instanceof PDTransparencyGroup)
+                {
+                    context.showTransparencyGroup((PDTransparencyGroup) form);
+                }
+                else
+                {
+                    context.showForm(form);
+                }
+            }
+            finally
+            {
+                context.decreaseLevel();
+            }
         }
     }
 

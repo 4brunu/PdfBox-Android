@@ -24,7 +24,6 @@ import com.tom_roush.pdfbox.cos.COSName;
 import com.tom_roush.pdfbox.contentstream.operator.Operator;
 import com.tom_roush.pdfbox.contentstream.operator.OperatorName;
 import com.tom_roush.pdfbox.contentstream.operator.OperatorProcessor;
-import com.tom_roush.pdfbox.text.PDFMarkedContentExtractor;
 
 /**
  * BMC : Begins a marked-content sequence.
@@ -44,11 +43,7 @@ public class BeginMarkedContentSequence extends OperatorProcessor
                 tag = (COSName) argument;
             }
         }
-
-        if (this.context instanceof PDFMarkedContentExtractor)
-        {
-            ((PDFMarkedContentExtractor) this.context).beginMarkedContentSequence(tag, null);
-        }
+        context.beginMarkedContentSequence(tag, null);
     }
 
     @Override
