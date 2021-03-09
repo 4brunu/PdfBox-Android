@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.util.Log;
 
 import com.tom_roush.pdfbox.io.IOUtils;
 import com.tom_roush.pdfbox.io.ScratchFile;
@@ -38,11 +39,6 @@ import com.tom_roush.pdfbox.pdmodel.PDDocument;
  */
 public class COSDocument extends COSBase implements Closeable
 {
-
-    /**
-     * Log instance.
-     */
-
     private float version = 1.4f;
 
     /**
@@ -169,10 +165,12 @@ public class COSDocument extends COSBase implements Closeable
                     }
                     else if (typeItem != null)
                     {
+                        Log.d("PdfBox-Android", "Expected a /Name object after /Type, got '" + typeItem + "' instead");
                     }
                 }
                 catch (ClassCastException e)
                 {
+                    Log.w("PdfBox-Android", null, e);
                 }
             }
         }
@@ -222,10 +220,12 @@ public class COSDocument extends COSBase implements Closeable
                     }
                     else if (typeItem != null)
                     {
+                        Log.d("PdfBox-Android", "Expected a /Name object after /Type, got '" + typeItem + "' instead");
                     }
                 }
                 catch (ClassCastException e)
                 {
+                    Log.w("PdfBox-Android", null, e);
                 }
             }
         }
@@ -466,16 +466,16 @@ public class COSDocument extends COSBase implements Closeable
                 COSBase cosObject = object.getObject();
                 if (cosObject instanceof COSStream)
                 {
-                    firstException = IOUtils.closeAndLogException((COSStream) cosObject,  "COSStream", firstException);
+                    firstException = IOUtils.closeAndLogException((COSStream) cosObject, "COSStream", firstException);
                 }
             }
             for (COSStream stream : streams)
             {
-                firstException = IOUtils.closeAndLogException(stream,  "COSStream", firstException);
+                firstException = IOUtils.closeAndLogException(stream, "COSStream", firstException);
             }
             if (scratchFile != null)
             {
-                firstException = IOUtils.closeAndLogException(scratchFile,  "ScratchFile", firstException);
+                firstException = IOUtils.closeAndLogException(scratchFile, "ScratchFile", firstException);
             }
             closed = true;
 
@@ -510,6 +510,7 @@ public class COSDocument extends COSBase implements Closeable
         {
             if (warnMissingClose) 
             {
+                Log.w("PdfBox-Android",  "Warning: You did not close a PDF Document" );
             }
             close();
         }

@@ -20,8 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import java.util.Arrays;
-
-
+import android.util.Log;
 import com.tom_roush.pdfbox.util.Charsets;
 import com.tom_roush.pdfbox.util.Hex;
 
@@ -127,6 +126,7 @@ public final class COSString extends COSBase
             {
                 if (FORCE_PARSING)
                 {
+                    Log.w("PdfBox-Android", "Encountered a malformed hex string");
                     bytes.write('?'); // todo: what does Acrobat do? Any example PDFs?
                 }
                 else
