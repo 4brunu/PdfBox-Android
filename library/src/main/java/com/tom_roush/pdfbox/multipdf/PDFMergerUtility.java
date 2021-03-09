@@ -31,8 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-
+import android.util.Log;
 
 import com.tom_roush.pdfbox.cos.COSArray;
 import com.tom_roush.pdfbox.cos.COSBase;
@@ -84,10 +83,6 @@ import com.tom_roush.pdfbox.pdmodel.interactive.viewerpreferences.PDViewerPrefer
  */
 public class PDFMergerUtility
 {
-    /**
-     * Log instance.
-     */
-
     private final List<Object> sources;
     private String destinationFileName;
     private OutputStream destinationStream;
@@ -545,6 +540,7 @@ public class PDFMergerUtility
             catch (IOException ex)
             {
                 // PDFBOX-4223
+                Log.e("PdfBox-Android", "Invalid OpenAction ignored", ex);
             }
             PDDestination openActionDestination = null;
             if (openAction instanceof PDActionGoTo)
@@ -602,6 +598,7 @@ public class PDFMergerUtility
         {
             // found in 054080.pdf from PDFBOX-4417 and doesn't belong there
             destNames.getCOSObject().removeItem(COSName.ID_TREE);
+            Log.w("PdfBox-Android", "Removed /IDTree from /Names dictionary, doesn't belong there");
         }
 
         PDDocumentNameDestinationDictionary destDests = destCatalog.getDests();
@@ -682,6 +679,7 @@ public class PDFMergerUtility
                     COSBase base = srcNums.getObject(i);
                     if (!(base instanceof COSNumber))
                     {
+                        Log.e("PdfBox-Android", "page labels ignored, index " + i + " should be a number, but is " + base);
                         // remove what we added
                         while (destNums.size() > startSize)
                         {
@@ -711,6 +709,7 @@ public class PDFMergerUtility
             catch (IOException ex)
             {
                 // PDFBOX-4227 cleartext XMP stream with /Flate 
+                Log.e("PdfBox-Android", "Metadata skipped because it could not be read", ex);
             }
         }
 
@@ -1006,6 +1005,7 @@ public class PDFMergerUtility
         {
             if (destNames.containsKey(entry.getKey()))
             {
+                Log.w("PdfBox-Android", "key " + entry.getKey() + " already exists in destination IDTree");
             }
             else
             {
@@ -1097,6 +1097,7 @@ public class PDFMergerUtility
             }
             if (destDict.containsKey(entry.getKey()))
             {
+                Log.w("PdfBox-Android", "key " + entry.getKey() + " already exists in destination RoleMap");
             }
             else
             {
@@ -1142,6 +1143,8 @@ public class PDFMergerUtility
      * destination file.
      *
      * @param cloner the object cloner for the destination document
+     * @param destAcroForm the destination form
+     * @param srcAcroForm the source form
      * @throws IOException If an error occurs while adding the field.
      */
     private void mergeAcroForm(PDFCloneUtility cloner, PDDocumentCatalog destCatalog,
@@ -1236,6 +1239,7 @@ public class PDFMergerUtility
     {
         if (destField instanceof PDNonTerminalField && srcField instanceof PDNonTerminalField)
         {
+            Log.i("PdfBox-Android", "Skipping non terminal field " + srcField.getFullyQualifiedName());
             return;
         }
 
@@ -1253,6 +1257,7 @@ public class PDFMergerUtility
                     }
                     catch (IOException ioe)
                     {
+                        Log.w("PdfBox-Android", "Unable to clone widget for source field " + srcField.getFullyQualifiedName());
                     }
                     
                 }
@@ -1277,6 +1282,7 @@ public class PDFMergerUtility
                         }
                         catch (IOException ioe)
                         {
+                            Log.w("PdfBox-Android", "Unable to clone widget for source field " + srcField.getFullyQualifiedName());
                         }
                         
                     }
@@ -1285,11 +1291,14 @@ public class PDFMergerUtility
                 }
                 catch (IOException ioe)
                 {
+                    Log.w("PdfBox-Android", "Unable to clone widget for destination field " + destField.getFullyQualifiedName());
                 }
             }
         }
         else
         {
+            Log.i("PdfBox-Android", "Only merging two text fields is currently supported");
+            Log.i("PdfBox-Android", "Skipping merging of " + srcField.getFullyQualifiedName() + " into " + destField.getFullyQualifiedName());
         }
     }
 
@@ -1459,11 +1468,18 @@ public class PDFMergerUtility
                 COSBase item = parentTreeEntry.getItem(COSName.OBJ);
                 if (item instanceof COSObject)
                 {
-
+                    Log.d("PdfBox-Android", "clone potential orphan object in structure tree: " + item +
+                            ", Type: " + objDict.getNameAsString(COSName.TYPE) +
+                            ", Subtype: " + objDict.getNameAsString(COSName.SUBTYPE) +
+                            ", T: " + objDict.getNameAsString(COSName.T));
                 }
                 else
                 {
                     // don't display in full because of stack overflow
+                    Log.d("PdfBox-Android", "clone potential orphan object in structure tree" +
+                            ", Type: " + objDict.getNameAsString(COSName.TYPE) +
+                            ", Subtype: " + objDict.getNameAsString(COSName.SUBTYPE) +
+                            ", T: " + objDict.getNameAsString(COSName.T));
                 }
                 parentTreeEntry.setItem(COSName.OBJ, cloner.cloneForNewDocument(obj));
             }
