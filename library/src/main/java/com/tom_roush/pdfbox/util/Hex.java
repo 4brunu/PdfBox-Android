@@ -201,21 +201,27 @@ public final class Hex
         }
         catch (ClassNotFoundException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (IllegalAccessException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (IllegalArgumentException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (NoSuchMethodException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (SecurityException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (InvocationTargetException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         try
         {
@@ -226,22 +232,29 @@ public final class Hex
         }
         catch (ClassNotFoundException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (IllegalAccessException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (IllegalArgumentException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (NoSuchMethodException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (SecurityException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
         catch (InvocationTargetException ex)
         {
+            Log.d("PdfBox-Android", null, ex);
         }
+        Log.e("PdfBox-Android", "Can't decode base64 value, try adding javax.xml.bind:jaxb-api to your build");
         return new byte[0];
     }
 
@@ -271,6 +284,7 @@ public final class Hex
                 }
                 catch (NumberFormatException ex)
                 {
+                    Log.e("PdfBox-Android", "Can't parse " + hexByte + ", aborting decode", ex);
                     break;
                 }
                 i += 2;
