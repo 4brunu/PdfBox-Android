@@ -40,6 +40,6 @@ public class FillNonZeroRule extends GraphicsOperatorProcessor
     @Override
     public String getName()
     {
-        return "f";
+        return OperatorName.FILL_NON_ZERO;
     }
 }

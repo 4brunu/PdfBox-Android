@@ -40,6 +40,6 @@ public final class FillEvenOddRule extends GraphicsOperatorProcessor
     @Override
     public String getName()
     {
-        return "f*";
+        return OperatorName.FILL_EVEN_ODD;
     }
 }

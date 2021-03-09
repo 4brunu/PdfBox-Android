@@ -55,6 +55,7 @@ public class SetGraphicsStateParameters extends OperatorProcessor
         PDExtendedGraphicsState gs = context.getResources().getExtGState(graphicsName);
         if (gs == null)
         {
+            Log.e("PdfBox-Android", "name for 'gs' operator not found in resources: /" + graphicsName.getName());
             return;
         }
         gs.copyIntoGraphicsState( context.getGraphicsState() );

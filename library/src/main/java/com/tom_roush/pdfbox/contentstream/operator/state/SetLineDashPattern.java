@@ -71,12 +71,14 @@ public class SetLineDashPattern extends OperatorProcessor
             }
             else
             {
+                Log.w("PdfBox-Android", "dash array has non number element " + base + ", ignored");
                 dashArray = new COSArray();
                 break;
             }
         }
         if (dashArray.size() > 0 && allZero)
         {
+            Log.w("PdfBox-Android", "dash lengths all zero, ignored");
             dashArray = new COSArray();
         }
         context.setLineDashPattern(dashArray, dashPhase);

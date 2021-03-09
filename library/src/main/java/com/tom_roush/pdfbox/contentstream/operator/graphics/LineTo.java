@@ -71,6 +71,6 @@ public class LineTo extends GraphicsOperatorProcessor
     @Override
     public String getName()
     {
-        return "l";
+        return OperatorName.LINE_TO;
     }
 }

@@ -65,6 +65,7 @@ public class SetFontAndSize extends OperatorProcessor
         PDFont font = context.getResources().getFont(fontName);
         if (font == null)
         {
+            Log.w("PdfBox-Android", "font '" + fontName.getName() + "' not found in resources");
         }
         context.getGraphicsState().getTextState().setFont(font);
     }

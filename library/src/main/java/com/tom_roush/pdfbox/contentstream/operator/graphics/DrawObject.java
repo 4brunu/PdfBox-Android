@@ -40,7 +40,7 @@ public final class DrawObject extends GraphicsOperatorProcessor
     @Override
     public void process(Operator operator, List<COSBase> operands) throws IOException
     {
-        if (operands.size() < 1)
+        if (operands.isEmpty())
         {
             throw new MissingOperandException(operator, operands);
         }
@@ -74,6 +74,6 @@ public final class DrawObject extends GraphicsOperatorProcessor
     @Override
     public String getName()
     {
-        return "Do";
+        return OperatorName.DRAW_OBJECT;
     }
 }

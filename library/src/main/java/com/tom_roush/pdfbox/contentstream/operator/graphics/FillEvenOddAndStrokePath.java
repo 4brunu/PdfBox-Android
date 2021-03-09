@@ -39,6 +39,6 @@ public final class FillEvenOddAndStrokePath extends GraphicsOperatorProcessor
     @Override
     public String getName()
     {
-        return "B*";
+        return OperatorName.FILL_EVEN_ODD_AND_STROKE;
     }
 }

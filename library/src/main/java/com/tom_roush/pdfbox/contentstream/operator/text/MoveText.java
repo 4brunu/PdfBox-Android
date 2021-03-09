@@ -46,6 +46,7 @@ public class MoveText extends OperatorProcessor
         Matrix textLineMatrix = context.getTextLineMatrix();
         if (textLineMatrix == null)
         {
+            Log.w("PdfBox-Android", "TextLineMatrix is null, " + getName() + " operator will be ignored");
             return;
         }        
         

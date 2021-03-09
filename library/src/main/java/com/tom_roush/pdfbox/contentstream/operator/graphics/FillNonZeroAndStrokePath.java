@@ -41,6 +41,6 @@ public class FillNonZeroAndStrokePath extends GraphicsOperatorProcessor
     @Override
     public String getName()
     {
-        return "B";
+        return OperatorName.FILL_NON_ZERO_AND_STROKE;
     }
 }

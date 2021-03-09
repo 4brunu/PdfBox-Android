@@ -20,45 +20,47 @@ import android.graphics.PointF;
 
 import java.io.IOException;
 import java.util.List;
-
 import com.tom_roush.pdfbox.contentstream.operator.MissingOperandException;
-import com.tom_roush.pdfbox.contentstream.operator.Operator;
+
 import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSNumber;
+import com.tom_roush.pdfbox.contentstream.operator.Operator;
+import com.tom_roush.pdfbox.contentstream.operator.OperatorName;
 
 /**
- * m Begins a new subpath.
+ * y Append curved segment to path with final point replicated.
  *
  * @author Ben Litchfield
  */
-public final class MoveTo extends GraphicsOperatorProcessor
+public final class CurveToReplicateFinalPoint extends GraphicsOperatorProcessor
 {
     @Override
     public void process(Operator operator, List<COSBase> operands) throws IOException
     {
-        if (operands.size() < 2)
+        if (operands.size() < 4)
         {
             throw new MissingOperandException(operator, operands);
         }
-        COSBase base0 = operands.get(0);
-        if (!(base0 instanceof COSNumber))
+        if (!checkArrayTypesClass(operands, COSNumber.class))
         {
             return;
         }
-        COSBase base1 = operands.get(1);
-        if (!(base1 instanceof COSNumber))
-        {
-            return;
-        }
-        COSNumber x = (COSNumber)base0;
-        COSNumber y = (COSNumber)base1;
-        PointF pos = context.transformedPoint(x.floatValue(), y.floatValue());
-        context.moveTo(pos.x, pos.y);
+        COSNumber x1 = (COSNumber)operands.get(0);
+        COSNumber y1 = (COSNumber)operands.get(1);
+        COSNumber x3 = (COSNumber)operands.get(2);
+        COSNumber y3 = (COSNumber)operands.get(3);
+
+        PointF point1 = context.transformedPoint(x1.floatValue(), y1.floatValue());
+        PointF point3 = context.transformedPoint(x3.floatValue(), y3.floatValue());
+
+        context.curveTo(point1.x, point1.y,
+                        point3.x, point3.y,
+                        point3.x, point3.y);
     }
 
     @Override
     public String getName()
     {
-        return OperatorName.MOVE_TO;
+        return OperatorName.CURVE_TO_REPLICATE_FINAL_POINT;
     }
 }
