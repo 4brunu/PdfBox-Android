@@ -19,8 +19,7 @@ package com.tom_roush.pdfbox.io;
 import java.io.EOFException;
 import java.io.IOException;
 
-
-
+import android.util.Log;
 import com.tom_roush.pdfbox.cos.COSStream;
 
 /**
@@ -510,6 +509,10 @@ class ScratchFileBuffer implements RandomAccess
     {
         try
         {
+            if ((pageHandler != null) && Log.isLoggable("PdfBox-Android", Log.DEBUG))
+            {
+                Log.d("PdfBox-Android", "ScratchFileBuffer not closed!");
+            }
             close();
         }
         finally

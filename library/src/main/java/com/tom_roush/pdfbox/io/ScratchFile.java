@@ -22,8 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.BitSet;
 
-
-
+import android.util.Log;
 
 /**
  * Implements a memory page handling mechanism as base for creating (multiple)
@@ -144,6 +143,7 @@ public class ScratchFile implements Closeable
         catch (IOException ioe)
         {
             // cannot happen for main memory setup
+            Log.e("PdfBox-Android", "Unexpected exception occurred creating main memory scratch file instance: " + ioe.getMessage() );
             return null;
         }
     }
@@ -221,6 +221,7 @@ public class ScratchFile implements Closeable
                     {
                         if (!file.delete())
                         {
+                            Log.w("PdfBox-Android", "Error deleting scratch file: " + file.getAbsolutePath());
                         }
                         throw e;
                     }
@@ -238,10 +239,20 @@ public class ScratchFile implements Closeable
                 // enlarge if we do not int overflow
                 if (pageCount + ENLARGE_PAGE_COUNT > pageCount)
                 {
+                    if (Log.isLoggable("PdfBox-Android", Log.DEBUG))
+                    {
+                        Log.d("PdfBox-Android", "file: " + file);
+                        Log.d("PdfBox-Android", "fileLen before: " + fileLen + ", raf length: " + raf.length() + 
+                                  ", file length: " + file.length());
+                    }
                     fileLen += ENLARGE_PAGE_COUNT * PAGE_SIZE;
 
                     raf.setLength(fileLen);
-
+                    if (Log.isLoggable("PdfBox-Android", Log.DEBUG))
+                    {
+                        Log.d("PdfBox-Android", "fileLen after1: " + fileLen + ", raf length: " + raf.length() + 
+                                  ", file length: " + file.length());
+                    }
                     if (fileLen != raf.length())
                     {
                         // PDFBOX-4601 possible AWS lambda bug that setLength() doesn't throw
@@ -250,6 +261,7 @@ public class ScratchFile implements Closeable
                         raf.seek(fileLen - 1);
                         raf.write(0);
                         raf.seek(origFilePointer);
+                        Log.d("PdfBox-Android", "fileLen after2:  " + fileLen + ", raf length: " + raf.length() + ", file length: " + file.length());
                     }
                     freePages.set(pageCount, pageCount + ENLARGE_PAGE_COUNT);
                 }

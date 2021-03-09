@@ -19,8 +19,7 @@ package com.tom_roush.pdfbox.io;
 import java.io.InputStream;
 import java.io.IOException;
 
-
-
+import android.util.Log;
 
 /**
  * An InputStream which reads from a RandomAccessRead.
@@ -80,6 +79,8 @@ public class RandomAccessInputStream extends InputStream
         {
             // should never happen due to prior isEOF() check
             // unless there is an unsynchronized concurrent access
+            Log.e("PdfBox-Android", "read() returns -1, assumed position: " +
+                       position + ", actual position: " + input.getPosition());
         }
         return b;
     }
@@ -101,6 +102,8 @@ public class RandomAccessInputStream extends InputStream
         {
             // should never happen due to prior isEOF() check
             // unless there is an unsynchronized concurrent access
+            Log.e("PdfBox-Android", "read() returns -1, assumed position: " +
+                       position + ", actual position: " + input.getPosition());
         }
         return n;
     }
