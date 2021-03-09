@@ -144,12 +144,15 @@ public class PostScriptTable extends TTFTable
                 }
                 else
                 {
+                    Log.d("PdfBox-Android", "incorrect glyph name index " + index +
+                              ", valid numbers 0.." + WGL4Names.NUMBER_OF_MAC_GLYPHS);
                 }
             }
         }
         else if (formatType == 3.0f)
         {
             // no postscript information is provided.
+            Log.d("PdfBox-Android", "No PostScript name information is provided for the font " + font.getName());
         }
         initialized = true;
     }

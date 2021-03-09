@@ -16,6 +16,8 @@
  */
 package com.tom_roush.fontbox.cff;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,10 +37,6 @@ import com.tom_roush.fontbox.util.Charsets;
  */
 public class CFFParser
 {
-    /**
-     * Log instance.
-     */
-
     private static final String TAG_OTTO = "OTTO";
     private static final String TAG_TTCF = "ttcf";
     private static final String TAG_TTFONLY = "\u0000\u0001\u0000\u0000";
@@ -370,6 +368,7 @@ public class CFFParser
                 case 0xb:
                     if (hasExponent)
                     {
+                        Log.w("PdfBox-Android", "duplicate 'E' ignored after " + sb);
                         break;
                     }
                     sb.append("E");
@@ -379,6 +378,7 @@ public class CFFParser
                 case 0xc:
                     if (hasExponent)
                     {
+                        Log.w("PdfBox-Android", "duplicate 'E-' ignored after " + sb);
                         break;
                     }
                     sb.append("E-");

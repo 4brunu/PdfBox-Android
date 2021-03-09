@@ -16,6 +16,8 @@
  */
 package com.tom_roush.fontbox.ttf;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -143,6 +145,7 @@ public class CmapSubtable implements CmapLookup
         characterCodeToGlyphId = new HashMap<Integer, Integer>(numGlyphs);
         if (numGlyphs == 0)
         {
+            Log.w("PdfBox-Android", "subtable has no glyphs");
             return;
         }
         // -- Read all sub header
@@ -240,6 +243,7 @@ public class CmapSubtable implements CmapLookup
         characterCodeToGlyphId = new HashMap<Integer, Integer>(numGlyphs);
         if (numGlyphs == 0)
         {
+            Log.w("PdfBox-Android", "subtable has no glyphs");
             return;
         }
         for (long i = 0; i < nbGroups; ++i)
@@ -266,11 +270,13 @@ public class CmapSubtable implements CmapLookup
                 long glyphIndex = startGlyph + j;
                 if (glyphIndex >= numGlyphs)
                 {
+                    Log.w("PdfBox-Android", "Format 12 cmap contains an invalid glyph index");
                     break;
                 }
 
                 if (firstCode + j > 0x10FFFF)
                 {
+                    Log.w("PdfBox-Android", "Format 12 cmap contains character beyond UCS-4");
                 }
 
                 glyphIdToCharacterCode[(int) glyphIndex] = (int) (firstCode + j);
@@ -293,6 +299,7 @@ public class CmapSubtable implements CmapLookup
         characterCodeToGlyphId = new HashMap<Integer, Integer>(numGlyphs);
         if (numGlyphs == 0)
         {
+            Log.w("PdfBox-Android", "subtable has no glyphs");
             return;
         }
         for (long i = 0; i < nbGroups; ++i)
@@ -303,6 +310,7 @@ public class CmapSubtable implements CmapLookup
 
             if (glyphId > numGlyphs)
             {
+                Log.w("PdfBox-Android", "Format 13 cmap contains an invalid glyph index");
                 break;
             }
 
@@ -326,6 +334,7 @@ public class CmapSubtable implements CmapLookup
 
                 if (firstCode + j > 0x10FFFF)
                 {
+                    Log.w("PdfBox-Android", "Format 13 cmap contains character beyond UCS-4");
                 }
 
                 glyphIdToCharacterCode[(int) glyphId] = (int) (firstCode + j);
@@ -345,6 +354,7 @@ public class CmapSubtable implements CmapLookup
     {
         // Unicode Variation Sequences (UVS)
         // see http://blogs.adobe.com/CCJKType/2013/05/opentype-cmap-table-ramblings.html
+        Log.w("PdfBox-Android", "Format 14 cmap table is not supported and will be ignored");
     }
 
     /**
@@ -437,6 +447,7 @@ public class CmapSubtable implements CmapLookup
          */
         if (characterCodeToGlyphId.isEmpty())
         {
+            Log.w("PdfBox-Android", "cmap format 4 subtable is empty");
             return;
         }
         buildGlyphIdToCharacterCodeLookup(maxGlyphId);
@@ -502,6 +513,7 @@ public class CmapSubtable implements CmapLookup
         characterCodeToGlyphId = new HashMap<Integer, Integer>(numGlyphs);
         if (numGlyphs == 0)
         {
+            Log.w("PdfBox-Android", "subtable has no glyphs");
             return;
         }
         for (int i = 0; i <= maxSubHeaderIndex; ++i)
@@ -535,6 +547,7 @@ public class CmapSubtable implements CmapLookup
                 
                 if (p >= numGlyphs)
                 {
+                    Log.w("PdfBox-Android", "glyphId " + p + " for charcode " + charCode + " ignored, numGlyphs is " + numGlyphs);
                     continue;
                 }
                 

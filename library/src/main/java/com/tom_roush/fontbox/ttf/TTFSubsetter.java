@@ -952,6 +952,11 @@ public final class TTFSubsetter
      */
     public void writeToStream(OutputStream os) throws IOException
     {
+        if (glyphIds.isEmpty() || uniToGID.isEmpty())
+        {
+            Log.i("PdfBox-Android", "font subset is empty");
+        }
+        
         addCompoundReferences();
 
         DataOutputStream out = new DataOutputStream(os);

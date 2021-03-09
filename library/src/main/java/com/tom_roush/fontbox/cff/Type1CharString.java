@@ -51,7 +51,10 @@ public class Type1CharString
 
     /**
      * Constructs a new Type1CharString object.
-     * @param font Parent Type 1 CharString font
+     *
+     * @param font Parent Type 1 CharString font.
+     * @param fontName Name of the font.
+     * @param glyphName Name of the glyph.
      * @param sequence Type 1 char string sequence
      */
     public Type1CharString(Type1CharStringReader font, String fontName, String glyphName,
@@ -63,7 +66,10 @@ public class Type1CharString
 
     /**
      * Constructor for use in subclasses.
-     * @param font Parent Type 1 CharString font
+     *
+     * @param font Parent Type 1 CharString font.
+     * @param fontName Name of the font.
+     * @param glyphName Name of the glyph.
      */
     protected Type1CharString(Type1CharStringReader font, String fontName, String glyphName)
     {

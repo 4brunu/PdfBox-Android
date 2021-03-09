@@ -18,6 +18,8 @@
  */
 package com.tom_roush.fontbox.ttf;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,10 +39,6 @@ import java.util.Map;
  */
 public class GlyfCompositeDescript extends GlyfDescript
 {
-    /**
-     * Log instance.
-     */
-
     private final List<GlyfCompositeComp> components = new ArrayList<GlyfCompositeComp>();
     private final Map<Integer,GlyphDescription> descriptions = new HashMap<Integer,GlyphDescription>();
     private GlyphTable glyphTable = null;
@@ -91,6 +89,7 @@ public class GlyfCompositeDescript extends GlyfDescript
         }
         if (beingResolved)
         {
+            Log.e("PdfBox-Android", "Circular reference in GlyfCompositeDesc");
             return;
         }
         beingResolved = true;
@@ -202,6 +201,7 @@ public class GlyfCompositeDescript extends GlyfDescript
     {
         if (!resolved)
         {
+            Log.e("PdfBox-Android", "getPointCount called on unresolved GlyfCompositeDescript");
         }
         if (pointCount < 0)
         {
@@ -209,6 +209,7 @@ public class GlyfCompositeDescript extends GlyfDescript
             GlyphDescription gd = descriptions.get(c.getGlyphIndex());
             if (gd == null)
             {
+                Log.e("PdfBox-Android", "GlyphDescription for index " + c.getGlyphIndex() + " is null, returning 0");
                 pointCount = 0;
             }
             else
@@ -227,6 +228,7 @@ public class GlyfCompositeDescript extends GlyfDescript
     {
         if (!resolved)
         {
+            Log.e("PdfBox-Android", "getContourCount called on unresolved GlyfCompositeDescript");
         }
         if (contourCount < 0)
         {
@@ -287,7 +289,8 @@ public class GlyfCompositeDescript extends GlyfDescript
             }
             catch (IOException e)
             {
-            }
+                Log.e("PdfBox-Android", null, e);
+            }            
         }
     }
 }

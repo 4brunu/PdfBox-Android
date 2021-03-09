@@ -68,6 +68,7 @@ public class KerningTable extends TTFTable
         }
         else
         {
+            Log.d("PdfBox-Android", "Skipped kerning table due to an unsupported kerning table version: " + version);
         }
         if (numSubtables > 0)
         {

@@ -17,9 +17,11 @@
 package com.tom_roush.fontbox.ttf;
 
 import android.graphics.Path;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This class provides a glyph to GeneralPath conversion for true type fonts.
@@ -139,20 +141,29 @@ class GlyphRenderer
     private void moveTo(Path path, Point point)
     {
         path.moveTo(point.x, point.y);
-//        Log.v("PdfBox-Android", "moveTo: " + String.format("%d,%d", point.x, point.y));
+        if (Log.isLoggable("PdfBox-Android", Log.DEBUG))
+        {
+            Log.d("PdfBox-Android", "moveTo: " + String.format(Locale.US, "%d,%d", point.x, point.y));
+        }
     }
 
     private void lineTo(Path path, Point point)
     {
         path.lineTo(point.x, point.y);
-//        Log.v("PdfBox-Android", "lineTo: " + String.format("%d,%d", point.x, point.y));
+        if (Log.isLoggable("PdfBox-Android", Log.DEBUG))
+        {
+            Log.d("PdfBox-Android", "lineTo: " + String.format(Locale.US, "%d,%d", point.x, point.y));
+        }
     }
 
     private void quadTo(Path path, Point ctrlPoint, Point point)
     {
         path.quadTo(ctrlPoint.x, ctrlPoint.y, point.x, point.y);
-//        Log.v("PdfBox-Android", "quadTo: " + String.format("%d,%d %d,%d", ctrlPoint.x, ctrlPoint.y,
-//                    point.x, point.y));
+        if (Log.isLoggable("PdfBox-Android", Log.DEBUG))
+        {
+            Log.d("PdfBox-Android", "quadTo: " + String.format(Locale.US, "%d,%d %d,%d", ctrlPoint.x, ctrlPoint.y,
+                    point.x, point.y));
+        }
     }
 
     private int midValue(int a, int b)

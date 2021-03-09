@@ -83,6 +83,8 @@ public class Type1CharStringParser
                 Object obj = sequence.remove(sequence.size() - 1);
                 if (!(obj instanceof Integer))
                 {
+                    Log.w("PdfBox-Android", "Parameter " + obj + " for CALLSUBR is ignored, integer expected in glyph '"
+                            + glyphName + "' of font " + fontName);
                     continue;
                 }
                 Integer operand = (Integer) obj;
@@ -100,6 +102,9 @@ public class Type1CharStringParser
                 }
                 else
                 {
+                    Log.w("PdfBox-Android", "CALLSUBR is ignored, operand: " + operand
+                            + ", subrs.size(): " + subrs.size() + " in glyph '"
+                            + glyphName + "' of font " + fontName);
                     // remove all parameters (there can be more than one)
                     while (sequence.get(sequence.size() - 1) instanceof Integer)
                     {
@@ -155,6 +160,7 @@ public class Type1CharStringParser
 
                 if (results.size() > 0)
                 {
+                    Log.w("PdfBox-Android", "Value left on the PostScript stack in glyph " + glyphName + " of font " + fontName);
                 }
             }
             else if (b0 >= 0 && b0 <= 31)

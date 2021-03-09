@@ -19,6 +19,8 @@
 
 package com.tom_roush.fontbox.type1;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -44,10 +46,6 @@ import java.nio.ByteBuffer;
  */
 class Type1Lexer
 {
-    /**
-     * Log instance.
-     */
-
     private final ByteBuffer buffer;
     private Token aheadToken;
     private int openParens = 0;
@@ -175,6 +173,7 @@ class Type1Lexer
                 }
                 else if (c == 0)
                 {
+                    Log.w("PdfBox-Android", "NULL byte in font, skipped");
                     skip = true;
                 }
                 else

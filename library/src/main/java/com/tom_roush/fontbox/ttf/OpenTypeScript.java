@@ -228,10 +228,13 @@ public final class OpenTypeScript
             }
             else
             {
+                Log.w("PdfBox-Android", "Could not find '" + path + "', mirroring char map will be empty: ");
             }
         }
         catch (IOException e)
         {
+            Log.w("PdfBox-Android", "Could not parse Scripts.txt, mirroring char map will be empty: "
+                    + e.getMessage());
         }
         finally
         {
@@ -243,6 +246,7 @@ public final class OpenTypeScript
                 }
                 catch (IOException ex)
                 {
+                    Log.w("PdfBox-Android", "Could not close Scripts.txt");
                 }
             }
         }

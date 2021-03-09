@@ -128,6 +128,7 @@ public class CMap
         {
             seq += String.format("0x%02X (%04o) ", bytes[i], bytes[i]);
         }
+        Log.w("PdfBox-Android", "Invalid character code sequence " + seq + "in CMap " + cmapName);
         return 0;
     }
 

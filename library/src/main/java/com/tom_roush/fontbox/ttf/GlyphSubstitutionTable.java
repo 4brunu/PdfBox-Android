@@ -175,6 +175,8 @@ public class GlyphSubstitutionTable extends TTFTable
             {
                 // catch corrupt file
                 // https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2#flTbl
+                Log.w("PdfBox-Android", "FeatureRecord array not alphabetically sorted by FeatureTag: " +
+                           featureRecord.featureTag + " < " + prevFeatureTag);
                 return new FeatureRecord[0];
             }
             featureOffsets[i] = data.readUnsignedShort();
@@ -247,6 +249,7 @@ public class GlyphSubstitutionTable extends TTFTable
             break;
         default:
             // Other lookup types are not supported
+            Log.d("PdfBox-Android", "Type " + lookupTable.lookupType + " GSUB lookup table is not supported and will be ignored");
         }
         return lookupTable;
     }
@@ -474,6 +477,8 @@ public class GlyphSubstitutionTable extends TTFTable
             LookupTable lookupTable = lookupList[lookupListIndex];
             if (lookupTable.lookupType != 1)
             {
+                Log.d("PdfBox-Android", "Skipping GSUB feature '" + featureRecord.featureTag
+                        + "' because it requires unsupported lookup table type " + lookupTable.lookupType);
                 continue;
             }
             gid = doLookup(lookupTable, gid);
@@ -548,6 +553,7 @@ public class GlyphSubstitutionTable extends TTFTable
         Integer gid = reverseLookup.get(sgid);
         if (gid == null)
         {
+            Log.w("PdfBox-Android", "Trying to un-substitute a never-before-seen gid: " + sgid);
             return sgid;
         }
         return gid;

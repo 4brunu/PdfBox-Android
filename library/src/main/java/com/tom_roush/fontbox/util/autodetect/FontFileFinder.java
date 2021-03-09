@@ -128,6 +128,21 @@ public class FontFileFinder
                 }
                 walk(file, results);
             }
+            else
+            {
+                if (Log.isLoggable("PdfBox-Android", Log.DEBUG))
+                {
+                    Log.d("PdfBox-Android", "checkFontfile check " + file);
+                }
+                if (checkFontfile(file))
+                {
+                    if (Log.isLoggable("PdfBox-Android", Log.DEBUG))
+                    {
+                        Log.d("PdfBox-Android", "checkFontfile found " + file);
+                    }
+                    results.add(file.toURI());
+                }
+            }
         }
     }
     
