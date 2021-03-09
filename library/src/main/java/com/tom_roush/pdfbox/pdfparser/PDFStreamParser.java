@@ -21,8 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-
+import android.util.Log;
 import com.tom_roush.pdfbox.contentstream.PDContentStream;
 import com.tom_roush.pdfbox.contentstream.operator.Operator;
 import com.tom_roush.pdfbox.contentstream.operator.OperatorName;
@@ -43,10 +42,6 @@ import com.tom_roush.pdfbox.pdmodel.common.PDStream;
  */
 public class PDFStreamParser extends BaseParser
 {
-    /**
-     * Log instance.
-     */
-
     private final List<Object> streamObjects = new ArrayList<Object>( 100 );
     
     private static final int MAX_BIN_CHAR_TEST_LENGTH = 10;
@@ -293,6 +288,7 @@ public class PDFStreamParser extends BaseParser
                         Operator imageData = (Operator) nextToken;
                         if (imageData.getImageData() == null || imageData.getImageData().length == 0)
                         {
+                            Log.w("PdfBox-Android", "empty inline image at stream offset " + seqSource.getPosition());
                         }
                         beginImageOP.setImageData(imageData.getImageData());
                     }
@@ -431,6 +427,8 @@ public class PDFStreamParser extends BaseParser
         }
         if (!noBinData)
         {
+            Log.w("PdfBox-Android", "ignoring 'EI' assumed to be in the middle of inline image at stream offset " +
+                    pdfSource.getPosition());
         }
         return noBinData;
     }

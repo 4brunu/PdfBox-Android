@@ -20,8 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-
-
+import android.util.Log;
 import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSDictionary;
 import com.tom_roush.pdfbox.cos.COSDocument;
@@ -32,6 +31,7 @@ import com.tom_roush.pdfbox.io.RandomAccessFile;
 
 public class FDFParser extends COSParser
 {
+import android.util.Log;
 
     /**
      * Constructs parser for given file using memory buffer.
@@ -96,6 +96,8 @@ public class FDFParser extends COSParser
             }
             catch (NumberFormatException nfe)
             {
+                Log.w("PdfBox-Android", "System property " + SYSPROP_EOFLOOKUPRANGE
+                        + " does not contain an integer value, but: '" + eofLookupRangeStr + "'");
             }
         }
         document = new COSDocument();

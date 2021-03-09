@@ -16,6 +16,8 @@
  */
 package com.tom_roush.pdfbox.pdfwriter;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;

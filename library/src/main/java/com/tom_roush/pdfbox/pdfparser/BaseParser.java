@@ -16,12 +16,13 @@
  */
 package com.tom_roush.pdfbox.pdfparser;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
-
 
 import com.tom_roush.pdfbox.cos.COSArray;
 import com.tom_roush.pdfbox.cos.COSBase;
@@ -36,7 +37,6 @@ import com.tom_roush.pdfbox.cos.COSObject;
 import com.tom_roush.pdfbox.cos.COSObjectKey;
 import com.tom_roush.pdfbox.cos.COSString;
 import com.tom_roush.pdfbox.util.Charsets;
-
 
 import static com.tom_roush.pdfbox.util.Charsets.ISO_8859_1;
 
@@ -55,10 +55,6 @@ public abstract class BaseParser
     static final int MAX_LENGTH_LONG = Long.toString(Long.MAX_VALUE).length();
 
     private final CharsetDecoder utf8Decoder = Charsets.UTF_8.newDecoder();
-
-    /**
-     * Log instance.
-     */
 
     protected static final int E = 'e';
     protected static final int N = 'n';
@@ -164,10 +160,12 @@ public abstract class BaseParser
         readExpectedChar('R');
         if (!(value instanceof COSInteger))
         {
+            Log.e("PdfBox-Android", "expected number, actual=" + value + " at offset " + numOffset);
             return COSNull.NULL;
         }
         if (!(generationNumber instanceof COSInteger))
         {
+            Log.e("PdfBox-Android", "expected number, actual=" + value + " at offset " + genOffset);
             return COSNull.NULL;
         }
         COSObjectKey key = new COSObjectKey(((COSInteger) value).longValue(),
@@ -215,6 +213,7 @@ public abstract class BaseParser
             else
             {
                 // invalid dictionary, we were expecting a /Name, read until the end or until we can recover
+                Log.w("PdfBox-Android", "Invalid dictionary, found: '" + c + "' but expected: '/' at offset " + seqSource.getPosition());
                 if (readUntilEndOfCOSDictionary())
                 {
                     // we couldn't recover
@@ -295,6 +294,7 @@ public abstract class BaseParser
 
         if (value == null)
         {
+            Log.w("PdfBox-Android", "Bad dictionary declaration at offset " + seqSource.getPosition());
         }
         else
         {
@@ -659,6 +659,8 @@ public abstract class BaseParser
             else
             {
                 //it could be a bad object in the array which is just skipped
+                Log.w("PdfBox-Android", "Corrupt object reference at offset " +
+                        seqSource.getPosition() + ", start offset: " + startPosition);
 
                 // This could also be an "endobj" or "endstream" which means we can assume that
                 // the array has ended.
@@ -732,6 +734,7 @@ public abstract class BaseParser
                     // check for premature EOF
                     if (ch2 == -1 || ch1 == -1)
                     {
+                        Log.e("PdfBox-Android", "Premature EOF in BaseParser#parseCOSName");
                         c = -1;
                         break;
                     }

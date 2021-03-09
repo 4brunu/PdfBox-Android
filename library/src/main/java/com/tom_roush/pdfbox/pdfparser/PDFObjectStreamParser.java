@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
+import android.util.Log;
 import com.tom_roush.pdfbox.cos.COSBase;
 import com.tom_roush.pdfbox.cos.COSDocument;
 import com.tom_roush.pdfbox.cos.COSObject;
@@ -35,10 +34,6 @@ import com.tom_roush.pdfbox.cos.COSStream;
  */
 public class PDFObjectStreamParser extends BaseParser
 {
-    /**
-     * Log instance.
-     */
-
     private List<COSObject> streamObjects = null;
     private final COSStream stream;
 
@@ -52,7 +47,6 @@ public class PDFObjectStreamParser extends BaseParser
     public PDFObjectStreamParser(COSStream stream, COSDocument document) throws IOException
     {
         super(new InputStreamSource(stream.createInputStream()));
-
         this.stream = stream;
         this.document = document;
     }
@@ -91,11 +85,16 @@ public class PDFObjectStreamParser extends BaseParser
                 object.setGenerationNumber(0);
                 if (objectCounter >= objectNumbers.size())
                 {
+                    Log.e("PdfBox-Android", "/ObjStm (object stream) has more objects than /N " + numberOfObjects);
                     break;
                 }
                 object.setObjectNumber( objectNumbers.get( objectCounter) );
                 streamObjects.add( object );
-                // According to the spec objects within an object stream shall not be enclosed
+                if(Log.isLoggable("PdfBox-Android", Log.DEBUG))
+                {
+                    Log.d("PdfBox-Android",  "parsed=" + object );
+                }
+                // According to the spec objects within an object stream shall not be enclosed 
                 // by obj/endobj tags, but there are some pdfs in the wild using those tags 
                 // skip endobject marker if present
                 if (!seqSource.isEOF() && seqSource.peek() == 'e')
