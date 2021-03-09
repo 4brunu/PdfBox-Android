@@ -1848,10 +1848,13 @@ public class PDFTextStripper extends LegacyPDFStreamEngine
             }
             else
             {
+                Log.w("PdfBox-Android", "Could not find '" + path + "', mirroring char map will be empty: ");
             }
         }
         catch (IOException e)
         {
+            Log.w("PdfBox-Android", "Could not parse BidiMirroring.txt, mirroring char map will be empty: "
+                    + e.getMessage());
         }
         finally
         {
@@ -1861,6 +1864,7 @@ public class PDFTextStripper extends LegacyPDFStreamEngine
             }
             catch (IOException e)
             {
+                Log.e("PdfBox-Android", "Could not close BidiMirroring.txt ", e);
             }
         }
     }

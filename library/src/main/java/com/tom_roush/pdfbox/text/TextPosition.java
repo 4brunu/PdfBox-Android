@@ -597,6 +597,8 @@ public final class TextPosition
         {
             if (i >= widths.length)
             {
+                Log.i("PdfBox-Android", "diacritic " + diacritic.getUnicode() + " on ligature " + unicode + 
+                        " is not supported yet and is ignored (PDFBOX-2831)");
                 break;
             }
             float currCharXEnd = currCharXStart + widths[i];

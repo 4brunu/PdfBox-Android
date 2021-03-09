@@ -274,7 +274,7 @@ class LegacyPDFStreamEngine extends PDFStreamEngine
         }
         catch (Throwable exception)
         {
-
+            Log.w("PdfBox-Android", exception, exception);
         }
 
         if (spaceWidthText == 0)
